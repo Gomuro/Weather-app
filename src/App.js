@@ -1,24 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import { Container, Box } from "@material-ui/core";
+import React, { useState } from "react";
+import "./App.css";
+import Form from "./components/Form";
+import Weather from "./components/Weather";
 
 function App() {
+  const [city, setCity] = useState("");
+  const [weather, setWeather] = useState([]);
+
+  const getWeather = async (e) => {
+    e.preventDefault();
+    const api_call = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?q=${city}&APPID=4f7afecb14fc0c84a88ef1e011db6bdb`
+    );
+    const data = await api_call.json();
+    setWeather(data);
+    console.log(data);
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container className="App" fullWidth>
+      <Box className="App-header">
+        <h1>Weather App</h1>
+        <Form getWeather={getWeather} setCity={setCity} mb={10} />
+        <Weather weather={weather} />
+      </Box>
+    </Container>
   );
 }
 

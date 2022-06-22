@@ -6,25 +6,25 @@ const Weather = (props) => {
   const { weather } = props;
   return (
     <Box className="main">
-      {weather.name && (
-        <Typography variant="h2" fontSize={"bold"}>
-          {weather.name}
-        </Typography>
+      {weather.city && (
+        <Typography variant="h3">Today in {weather.city.name}</Typography>
       )}
 
-      {weather.main && (
+      {weather.list && (
         <Typography variant="h4">
-          {Math.round(weather.main.temp - 273.15)}°C
+          {Math.round(weather.list[0].main.temp - 273.15)}°C
         </Typography>
       )}
-      {weather.weather && (
+      {weather.list && (
         <img
-          src={`http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+          src={`http://openweathermap.org/img/wn/${weather.list[0].weather[0].icon}@2x.png`}
           alt="weather"
         />
       )}
-      {weather.main && (
-        <Typography variant="h4">{weather.weather[0].description}</Typography>
+      {weather.list && (
+        <Typography variant="h4">
+          {weather.list[0].weather[0].description}
+        </Typography>
       )}
     </Box>
   );

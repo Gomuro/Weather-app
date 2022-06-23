@@ -1,5 +1,5 @@
 import { Container, Box } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import Form from "./components/Form";
 import Weather from "./components/Weather";
@@ -9,7 +9,26 @@ function App() {
   const [city, setCity] = useState("");
   const [weather, setWeather] = useState([]);
   const [days, setDays] = useState(new Array(5));
+  // get weather through user coordinates
+  useEffect(() => {
+    const successGotCoords = async (position) => {
+      const { latitude, longitude } = position.coords;
+      const lat = Math.round(latitude);
+      const lon = Math.round(longitude);
 
+      const api_call = await fetch(
+        `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=6557810176c36fac5f0db536711a6c52`
+      );
+      const data = await api_call.json();
+      updateDays(data);
+      setWeather(data);
+    };
+
+    if (!city) {
+      navigator.geolocation.getCurrentPosition(successGotCoords);
+    }
+  }, []);
+  // creates the day objects and updates the state
   const updateDays = (data) => {
     const days = [];
 
@@ -46,7 +65,7 @@ function App() {
     }
     return dayIndex;
   };
-
+  // tries to make an API call with the given city name and triggers state update
   const getWeather = async (e) => {
     e.preventDefault();
     const api_call = await fetch(
@@ -54,7 +73,7 @@ function App() {
     );
     const data = await api_call.json();
 
-    await updateDays(data);
+    updateDays(data);
     setWeather(data);
   };
 
